@@ -22,6 +22,13 @@ public class CplFindByTagIterator extends FileFindIterator {
 
     @Override
     public void findFile(String path, DcpContext context) {
+        this.findFileByType(path, XmlUtils.CPL, context);
+        if (context.getCplList().isEmpty()) {
+            this.findFileByType(path, XmlUtils.XML, context);
+        }
+    }
+
+    public void findFileByType(String path, String type, DcpContext context) {
         Map<String, String> uuidMappingPath = context.getUuidMappingPath();
 
         for (PklXml pklXml : context.getPklList()) {
@@ -34,7 +41,7 @@ public class CplFindByTagIterator extends FileFindIterator {
                     for (PklAsset pklAsset : asset) {
                         String assetType = pklAsset.getType();
 
-                        if (StrUtils.containIgnoreCase(assetType, XmlUtils.CPL)) {
+                        if (StrUtils.containIgnoreCase(assetType, type)) {
                             String cplPath = uuidMappingPath.get(pklAsset.getId());
 
                             if (cplPath != null) {
